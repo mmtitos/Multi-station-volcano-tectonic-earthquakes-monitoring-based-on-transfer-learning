@@ -1,0 +1,2 @@
+# Multi-station-volcano-tectonic-earthquakes-monitoring-based-on-transfer-learning
+A multi-station volcano-tectonic earthquake monitoring approach based on transfer learning techniques. We applied a RNN–LSTM and a temporal convolutional network (TCN)—both trained with a master dataset and catalogue belonging to Deception Island volcano (Antarctica), as blind-recognizers to a new volcanic environment (Mount Bezymianny, Kamchatka)
