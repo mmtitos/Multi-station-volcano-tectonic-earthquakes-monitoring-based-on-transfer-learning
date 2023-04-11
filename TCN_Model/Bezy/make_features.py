@@ -8,7 +8,7 @@ import numpy as np
 import sys
 import theano
 from sys import argv
-import _pickle
+import _pickle as cPickle
 import os
 import glob
 import random
@@ -75,54 +75,6 @@ Function that will return the label for a given event
 def get_label(event):
     etq = ['sil', 'tremor', 'hy', 'eq', 'lp']  # [0,1,2,3,4]
     return etq.index(event)
-
-
-"""
-This function will calculate the features we need and store them in files
-In case we change the folder where we store the data, we need to change the datapaths
-
-	:type lpc: bool
-        :param lpc: If we want to calculate the LPC coefficients
-
-	:type specgram: bool
-        :param fft: If we want to calculate the windowed specgram
-
-	:type nfft: int
-	:param nfft: the fft size. Default is 256 
-	
-	:type winlen: int
-	:param winlen: the length of the analysis window in seconds. Default is 4s 
-	
-	:type winstep: int
-	:param winstep: the length between successive windows in seconds. Default is 0.5s 
-
-	:type nlpc: int
-	:param nlpc: Number of LPC coefficients we want to calculate
-
-"""
-
-
-def make_features(lpc=False, specgram=False, samplerate=100, nfft=512, winlen=4, winstep=0.5, nlpc=10):
-
-    datapath = "/home/usuario/Escritorio/Decepcion/data_segm/95-96/"
-    data_segm_path = "/home/usuario/Escritorio/Decepcion/data_segm/"
-    filename = datapath+"interpolation.mlf"
-
-    if not os.path.isfile(filename):
-        read_mlf(data_segm_path, datapath)
-
-    if lpc:
-        dataset, labels = make_lpc(datapath, nlpc)
-
-    if specgram:
-        dataset, labels = make_specgram(
-            datapath, nfft, winlen, winstep, samplerate)
-        values = [samplerate, nfft, winlen, winstep]
-        f4 = "values.p"
-        cPickle.dump(values, open(f4, 'wb'))
-
-    return dataset, labels
-
 
 """
 Function that will normalize the data by windows and by dimension
