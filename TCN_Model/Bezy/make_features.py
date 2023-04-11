@@ -16,7 +16,7 @@ import math
 import scipy
 import theano
 import theano.tensor as T
-from read import *
+#from read import *
 import obspy as obspy
 from scipy import signal
 rng = random.Random(1234)
