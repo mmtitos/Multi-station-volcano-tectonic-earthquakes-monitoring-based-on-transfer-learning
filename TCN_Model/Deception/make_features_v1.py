@@ -17,68 +17,6 @@ import obspy as obspy
 import _pickle as cPickle 
 rng = random.Random(1234)
 
-"""
-It shuffle the data as 75% for training and 25% for test if we want isolated events
-"""
-
-
-def split_dataset(dataset, percentaje):
-    if(percentaje == 3):
-    	ntraining = int(len(dataset)*80)/100
-    	training = dataset[0:int(ntraining)]
-    	test = dataset[int(ntraining):len(dataset)]
-    elif(percentaje == 0):
-        ntraining = int(len(dataset)*20)/100
-        test = dataset[0:int(ntraining)]
-        training = dataset[int(ntraining):len(dataset)]
-    elif(percentaje == 1):
-        ntest1 = int(len(dataset)*20)/100
-        ntest2 = int(len(dataset)*40)/100
-        training1 = dataset[0:int(ntest1)]
-        training2 = dataset[int(ntest2):len(dataset)]
-        test = dataset[int(ntest1):int(ntest2)]
-        training = np.concatenate((training1, training2), axis=0)
-    else:
-        ntest1 = int(len(dataset)*40)/100
-        ntest2 = int(len(dataset)*60)/100
-        training1 = dataset[0:int(ntest1)]
-        training2 = dataset[int(ntest2):len(dataset)]
-        test = dataset[int(ntest1):int(ntest2)]
-        training = np.concatenate((training1, training2), axis=0)
-
-    return training, test
-
-
-def split_dataset_POPO(dataset, percentaje):
-
-    ntraining = int(len(dataset)*percentaje)/100
-    training = dataset[0:int(ntraining)]
-    test = dataset[int(ntraining):len(dataset)]
-    return training, test
-
-
-
-def shuffle_data(label_training, training_set):
-
-    union = list(zip(label_training, training_set))
-    rng.shuffle(union)
-    label_training = [e[0] for e in union]
-    training_set = [e[1] for e in union]
-
-    return label_training, training_set
-
-
-
-def create_validation(test, y_test):
-
-    full = int(len(test))
-    validation_set = test[0:int(full/2)]
-    validation_label = y_test[0:int(full/2)]
-    # Now we rebuild the test_set
-    test_set = test[int(full/2):int(full)]
-    label_test = y_test[int(full/2):int(full)]
-
-    return validation_label, validation_set, label_test, test_set
 
 """
 Read the data from pickle format
