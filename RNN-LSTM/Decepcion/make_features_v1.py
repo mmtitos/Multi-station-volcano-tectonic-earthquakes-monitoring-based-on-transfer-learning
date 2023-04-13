@@ -153,7 +153,7 @@ def make_mfcc_fbank():
 Calculate the fbank featurs for the dataset
 """
 
-def read_mfcc_fbank(percentaje=4):
+def read_mfcc_fbank(partition=4):
 
     samplerate = 100
     nfft = 1024
@@ -169,8 +169,8 @@ def read_mfcc_fbank(percentaje=4):
 
     values_fbank = [samplerate, winlen, winstep,
                     nfilt, nfft, lowfreq, highfreq, preemph]
-    s1, s2 = "fbank_part"+str(percentaje)+"_normalized.p", "fbank_labels_part"+str(percentaje)+"_normalized.p"
-    s3, s4 = "fbank_part"+str(percentaje)+"_test_normalized.p", "fbank_labels_part"+str(percentaje)+"_test_normalized.p"
+    s1, s2 = "fbank_part"+str(partition)+"_normalized.p", "fbank_labels_part"+str(partition)+"_normalized.p"
+    s3, s4 = "fbank_part"+str(partition)+"_test_normalized.p", "fbank_labels_part"+str(partition)+"_test_normalized.p"
     if os.path.isfile(s1) and os.path.isfile(s3):
         print ("... the dataset already exists.")
         training, label_training = load_pickle(s1, s2)

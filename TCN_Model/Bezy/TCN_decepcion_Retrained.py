@@ -297,8 +297,8 @@ if __name__ == '__main__':
     epoch_defined=int(sys.argv[1])
     filters=int(sys.argv[2])
     dropout= float(sys.argv[3])
-    test=True
-    percentaje=0
+    partition= int(sys.argv[4])
+    test = eval(sys.argv[5])
     print('Reading datasets...')
 
     if(test==False):
@@ -311,7 +311,7 @@ if __name__ == '__main__':
         entries = os.listdir(mseed_folder)
         for entry in entries:
           mseed_path=mseed_folder+entry
-          trs_path=trs_folder+entry.replace("MSEED", "trs" )
+          trs_path=trs_folder+entry.replace("MSEED", "trs")
           labels_benzy,dataset_benzy= compute_features_Benzy_Cropped_records(mseed_path, trs_path,norm_var=True, norm_colum=False)
           Benzy_labels.append(labels_benzy[0])
           Benzy_data.append(dataset_benzy[0])

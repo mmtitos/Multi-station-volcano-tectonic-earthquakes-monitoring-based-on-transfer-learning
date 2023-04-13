@@ -20,7 +20,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn import preprocessing
 import matplotlib.pyplot as plt
-from make_features_v1 import  read_mfcc_fbank, compute_features_Benzy_Cropped_records, Run_All_5_Stations, compute_features_Bezy
+from make_features_v1 import  read_mfcc_fbank
 torch.backends.cudnn.enabled = False
 
 print('__Python VERSION:', sys.version)
@@ -196,7 +196,7 @@ if __name__ == '__main__':
     cell_type = "LSTM"
     n_hidden = 210
     n_layers = 1
-    test=False
+    test = eval(sys.argv[1])
     
     batch_size=1
     learning_rate = 1.0e-3
@@ -205,43 +205,27 @@ if __name__ == '__main__':
     display_step = 25
     display_step = 1
     print ('starting...')
+    print ('reading data...')
     
+    label_training, data_training, label_test, data_test = read_mfcc_fbank(partition=0)
+    
+    print ('creating list of tensor...')
+    data_training_tensor = Create_List_Tensor(data_training)
+    data_test_tensor= Create_List_Tensor (data_test)
+    label_training_tensor= Create_List_Tensor_label(label_training)
+
     device = torch.device("cuda" if use_cuda else "cpu")
     print (device)
 
     print("==> Building a dRNN with %s cells" %cell_type)
 
-    if(test==False):
-        Benzy_labels=[]
-        Benzy_data=[]
-        mseed_folder='Registros_Cortar_Correlacion_wav_Trs_Sac_Mseed/Registros_MSEeD/'
-        trs_folder= 'Registros_Cortar_Correlacion_wav_Trs_Sac_Mseed/Registros_Wav_trs/'
-        
-        print ('reading training data...')
-        print ('creating list of tensor...')
-        entries = os.listdir(mseed_folder)
-        for entry in entries:
-           mseed_path=mseed_folder+entry
-           trs_path=trs_folder+entry.replace("MSEED", "trs" )
-           labels_benzy,dataset_benzy= compute_features_Benzy_Cropped_records(mseed_path, trs_path,norm_var=True, norm_colum=False)
-           Benzy_labels.append(labels_benzy[0])
-           Benzy_data.append(dataset_benzy[0])
-           
+    model = Classifier(48, n_hidden, n_layers, n_classes, cell_type=cell_type)
+    summary(model)
+    if use_cuda:
+       model.cuda()
        
+    if (test==False):
         
-        data_training_tensor= Create_List_Tensor (Benzy_data)
-        label_training_tensor= Create_List_Tensor_label(Benzy_labels)
-
-        device = torch.device("cuda" if use_cuda else "cpu")
-        print (device)
-                  
-        model = Classifier(48, n_hidden, n_layers, n_classes, cell_type=cell_type)
-        model.load_state_dict(torch.load('best_model_1l_P0'))
-        model.eval()
-        summary(model)
-        if use_cuda:
-           model.cuda()
-           
         previous=0
         best_accuracy=0
         best_diagonal=0
@@ -250,50 +234,34 @@ if __name__ == '__main__':
         #optimizer= optim.Adagrad(model.parameters(), lr=0.004)
         criterion = nn.CrossEntropyLoss()
         print('training...')
-        for iter in range(training_iters):      
-            optimizer.zero_grad()
-            #pred = model.forward(batch_x)
-            #pred = model.forward(packed_input)
-            total_error=[]
-            for i, (seq, labels) in enumerate(zip(data_training_tensor, label_training_tensor)):
-                pred, activations = model.forward(seq)
-                pred = torch.squeeze(pred, 1)
-                #loss=my_CrossEntropy(pred, labels)
-                loss = criterion(pred, labels)
-                loss.backward()
-                optimizer.step()
-                total_error.append(loss.cpu().detach().numpy())
-        
-            if (iter + 1) % display_step == 0:
-
-                print("Iter " + str(iter + 1) + ", Average Loss: " + "{:.6f}".format(np.mean(total_error)))
-                previous, diagonal=test_loop_list_training(data_training_tensor, Benzy_labels, model)
-                if (previous>=best_accuracy and diagonal>best_diagonal):
+        t0=time()
+        for iter in range(training_iters):     
+           optimizer.zero_grad()
+           total_error=[]
+           for i, (seq, labels) in enumerate(zip(data_training_tensor, label_training_tensor)):
+              pred, activations = model.forward(seq)
+              pred = torch.squeeze(pred, 1)
+              loss = criterion(pred, labels)
+              loss.backward()
+              optimizer.step()
+              total_error.append(loss.cpu().detach().numpy())
+           if (iter + 1) % display_step == 0:
+               print("Iter " + str(iter + 1) + ", Average Loss: " + "{:.6f}".format(np.mean(total_error)))
+               previous, diagonal=test_loop_list_training(data_test_tensor, label_test, model)
+               if (previous>=best_accuracy and diagonal>best_diagonal):
                    best_accuracy=previous
                    best_diagonal=diagonal
                    print('Saving the model...')
-                   #torch.save(model.state_dict(), 'best_new_model')
-                   torch.save(model.state_dict(), 'best_model_1l_P0_retrained')
-    
+                   torch.save(model.state_dict(), 'best_new_model')
+        print ("Elapsed time: %f" % (time() - t0))
     else:
-
-        model = Classifier(48, n_hidden, n_layers, n_classes, cell_type=cell_type)
-        model.load_state_dict(torch.load('best_model_1l_P0_retrained'))
+    
+        model.load_state_dict(torch.load('best_model_1l_P0'))
         model.eval()
         summary(model)
         if use_cuda:
            model.cuda()
-        paths, outputs= Run_All_5_Stations('08',['06', '10', '12', '14', '22'])
-        #paths, outputs= Run_All_5_Stations('10',['07', '12', '13', '24', '31'])
-        #paths, outputs= Run_All_5_Stations('12',['07', '09', '11', '18', '23'])
-        for k in range (len(paths)):
-           print (paths[k])
-           print (outputs[k])
-           labels,dataset= compute_features_Bezy(paths[k],norm_var=True, norm_colum=False)
-           data_test_tensor= Create_List_Tensor (dataset)
-           print ('before testing...')
-           testing=test_loop_list(data_test_tensor, model)
-
+        testing=test_loop_list(data_test_tensor, label_test, model)
 
     print("end")
 
