@@ -7,7 +7,8 @@ The TCN architecture implemented in this work uses as baseline the open source c
 
 As mentioned throughout the manuscript, the optimal model used in this work implements 6 layers with dilations between 1 and 32 and 50  convolutional filters. The inputs are 4-second windows parameterized as 48-features vectors corresponding to a bank of filters (16 filters) as well as their first and second derivatives.
 
-Once keras-tcn is installed as a package, users can use the code easily. The small version of the code, the data corresponding to partition 1 of leave one out and the trained model are attached to the TCN_Model/Deception folder so that the user can reproduce the results, both training and test. Each folder includes a readme.txt file explaining how to use the code.
+Once keras-tcn is installed as a package, users can use the code easily. The small version of the code and the training dataset belonging to Deception Island (partition 1 of leave one out approach) in their parameterized version are included to the TCN_Model/Deception folder for training and testing proposes. Each folder includes a readme.txt file explaining how to use the code.
+
 
 
 ## RNN-LSTM
@@ -16,7 +17,7 @@ The RNN-LSTM architecture implemented in this work uses as baseline the open sou
 
 As above mentioned, the inputs are 4-second windows parameterized as 48-features vectors corresponding to a bank of filters (16 filters) as well as their first and second derivatives.
 
-The small version of the code, the data corresponding to partition 1 of leave one out and the trained model are attached to the RNN_LSTM/Deception folder so that the user can reproduce the results, both training and test. Each folder includes a readme.txt file explaining how to use the code.
+The small version of the code and the training dataset belonging to Deception Island (partition 1 of leave one out approach) in their parameterized version are included to the RNN_LSTM/Deception folder for training and testing proposes. Each folder includes a readme.txt file explaining how to use the code.
 
 ## Re-training the models
 
