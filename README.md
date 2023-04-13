@@ -17,3 +17,7 @@ The RNN-LSTM architecture implemented in this work uses as baseline the open sou
 As above mentioned, the inputs are 4-second windows parameterized as 48-features vectors corresponding to a bank of filters (16 filters) as well as their first and second derivatives.
 
 The small version of the code, the data corresponding to partition 1 of leave one out and the trained model are attached to the RNN_LSTM/Deception folder so that the user can reproduce the results, both training and test. Each folder includes a readme.txt file explaining how to use the code.
+
+## Re-training the models
+
+The TCN_Model/Bezy and RNN_LSTM/Bezy folders contain the code, the raw data as well as the necessary functions to retrain the models in the new volcanic environment of the Bezy. An instance of the re-trained models is also included to facilitate the testing process. As before, each folder includes a readme.txt file explaining how to use the code.
