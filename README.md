@@ -21,6 +21,6 @@ The small version of the code and the training dataset belonging to Deception Is
 
 ## Re-training the models
 
-The TCN_Model/Bezy and RNN_LSTM/Bezy folders contain the code, the raw data as well as the necessary functions to retrain the models in the new volcanic environment. An instance of the re-trained models is also included to facilitate the testing process. As before, each folder includes a readme.txt file explaining how to use the code.
+The TCN_Model/Bezy and RNN_LSTM/Bezy folders contain the code, the raw data as well as the necessary functions to retrain the models in the new volcanic environment. An instance of the re-trained models is also included to facilitate the testing phase. As before, each folder includes a readme.txt file explaining how to use the code.
 
-It is important to highlight that the raw data corresponding to the Bezy volcano analyzed for this study can be found online at ZENODO [https://doi.org/10.5281/zenodo.7755506]
+It is important to highlight that the raw data corresponding to the Bezy volcano analyzed for this study can be found online at ZENODO [https://doi.org/10.5281/zenodo.7755506] To run properly, the code should be modified including the path where these files are located locally.
